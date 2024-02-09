@@ -1,5 +1,5 @@
 import {db} from '../config/firebase';
-import {collection, doc, setDoc, serverTimestamp} from 'firebase/firestore'
+import {collection, doc, setDoc, getDoc} from 'firebase/firestore'
 
 
 export const crudUser = () =>{
@@ -15,9 +15,20 @@ export const crudUser = () =>{
     }
 
 
-    // const getUserDetails = async (uid) =>{
-    //     await
-    // }
+    const getUserDetails = async (uid) =>{
 
-    return {addUserDetails}
+        try {
+            const userDetails = await getDoc(doc(userCollectionRef, uid));
+
+            if (userDetails.exists()) {
+                return userDetails.data();
+              }
+
+        } catch (error) {
+            console.error(error);
+        }
+
+    }
+
+    return {addUserDetails, getUserDetails}
 }

@@ -46,10 +46,6 @@ const Inscription = () => {
 
             addUserDetails(response.user.uid, userDetails);
 
-            addUserDetails("fqfddqsfqsdf", {
-              "dfqsdf": "fqfqfd",
-              "ddfdf":"dfqds"
-            })
 
 
             navigate("/");

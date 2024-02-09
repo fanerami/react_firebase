@@ -1,9 +1,13 @@
 import { signOut } from 'firebase/auth';
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom';
 import { auth } from '../config/firebase';
+import { crudUser } from '../hooks/crudUser';
 
 const Home = () => {
+
+
+  const [userConnectedDetails, setUserConnectedDetails] = useState({"firstName":"" , "name":""});
 
   const navigate = useNavigate();
   const deconnect = () => {
@@ -12,8 +16,31 @@ const Home = () => {
     navigate("/connexion");
   }
 
+  const {getUserDetails} = crudUser();
 
-  console.log(auth);
+
+  const userConnected = JSON.parse(localStorage.getItem("user"))
+
+  // console.log(auth);
+
+  useEffect(()=>{
+    const get = async() =>{
+      setUserConnectedDetails(await getUserDetails(userConnected.uid))
+    }
+
+    get()
+  }, [])
+
+
+
+  //setUserConnectedDetails(getUserDetails(userConnected.uid))
+  //getUserDetails(userConnected.uid)
+
+  console.log(userConnectedDetails);
+
+
+
+
   return (
     <div className="container mt-5">
 
@@ -28,15 +55,15 @@ const Home = () => {
               {/* Informations utilisateur (à remplacer par des données réelles) */}
               <div className="mb-3">
                 <label className="form-label">Prénom :</label>
-                <p className="form-control-static">John</p>
+                <p className="form-control-static">{userConnectedDetails.firstName}</p>
               </div>
               <div className="mb-3">
                 <label className="form-label">Nom :</label>
-                <p className="form-control-static">Doe</p>
+                <p className="form-control-static">{userConnectedDetails.name}</p>
               </div>
               <div className="mb-3">
                 <label className="form-label">Email :</label>
-                <p className="form-control-static">john.doe@example.com</p>
+                <p className="form-control-static">{userConnected.email}</p>
               </div>
 
               {/* Bouton de déconnexion */}
