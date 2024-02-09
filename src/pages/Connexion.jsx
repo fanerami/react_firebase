@@ -1,5 +1,5 @@
 import { signInWithEmailAndPassword } from 'firebase/auth';
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { auth } from '../config/firebase';
 import { useNavigate } from 'react-router-dom';
 
@@ -22,6 +22,10 @@ const Connexion = () => {
             console.error(error);
         }
     }
+
+    useEffect( ()=>{
+
+    }, []);
 
     return (
         <>
