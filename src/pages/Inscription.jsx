@@ -1,7 +1,8 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { createUserWithEmailAndPassword } from 'firebase/auth'
 import { auth } from '../config/firebase';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
+import { crudUser } from '../hooks/crudUser';
 
 
 
@@ -12,8 +13,13 @@ const Inscription = () => {
     const [mdp, setMdp] = useState("");
     const [repMdp, setRepMdp] = useState("");
     const [validation, setValidation] = useState("");
+    const [name, setName] = useState("");
+    const [firstName, setFirstName] = useState("");
+
+
 
     const navigate = useNavigate();
+    const {addUserDetails} = crudUser();
 
     const handleForm = async (e) => {
         e.preventDefault();
@@ -26,8 +32,26 @@ const Inscription = () => {
         try {
             const response = await createUserWithEmailAndPassword(auth, email, mdp);
             setValidation("");
-            //console.log(response);
+            console.log(response);
             localStorage.setItem("user", JSON.stringify(response.user));
+
+            const userDetails = {
+                "name": name
+            }
+
+            if(firstName !==""){
+                userDetails["firstName"] = firstName;
+            }
+
+
+            addUserDetails(response.user.uid, userDetails);
+
+            addUserDetails("fqfddqsfqsdf", {
+              "dfqsdf": "fqfqfd",
+              "ddfdf":"dfqds"
+            })
+
+
             navigate("/");
         } catch (error) {
             if(error.code === "auth/email-already-in-use") {
@@ -41,8 +65,18 @@ const Inscription = () => {
 
 
 
+
     }
 
+
+    useEffect( ()=>{
+
+        const user = localStorage.getItem("user");
+        if(user){
+            navigate("/");
+        }
+
+    }, []);
 
   return (
     <>
@@ -111,11 +145,43 @@ const Inscription = () => {
 
                                     </div>
 
+                                    <div className="mb-3">
+
+                                        <label className='form-label' htmlFor="signupName">Nom</label>
+
+                                        <input
+                                        type='text'
+                                        name='name'
+                                        className='form-control'
+                                        id='signupName'
+                                        onChange={(e) => setName(e.target.value)}
+                                        required />
+
+
+                                    </div>
+
+                                    <div className="mb-3">
+
+                                        <label className='form-label' htmlFor="signupFirstName">Prénom</label>
+
+                                        <input
+                                        type='text'
+                                        name='firstname'
+                                        className='form-control'
+                                        id='signupFirstName'
+                                        onChange={(e) => setFirstName(e.target.value)}
+                                         />
+
+
+                                    </div>
+
                                     <button type='submit' className="btn btn-primary">S'inscrire</button>
                                 </form>
 
                             </div>
-
+                            <div className="text-center mt-3">
+                                <p>Déjà inscrit ? <Link to="/connexion">Se connecter</Link></p>
+                            </div>
                         </div>
                     </div>
                  </div>

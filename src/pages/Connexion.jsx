@@ -1,7 +1,7 @@
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import React, { useEffect, useState } from 'react'
 import { auth } from '../config/firebase';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 
 const Connexion = () => {
 
@@ -23,7 +23,14 @@ const Connexion = () => {
         }
     }
 
+    console.log(auth);
+
     useEffect( ()=>{
+
+        const user = localStorage.getItem("user");
+        if(user){
+            navigate("/");
+        }
 
     }, []);
 
@@ -85,7 +92,9 @@ const Connexion = () => {
                                     </form>
 
                                 </div>
-
+                                <div className="text-center mt-3">
+                                    <p>Nouveau ici ? <Link to="/inscription">S'inscrire</Link></p>
+                                </div>
                             </div>
                         </div>
                      </div>
