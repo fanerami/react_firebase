@@ -23,6 +23,8 @@ const Connexion = () => {
             setValidation("");
 
 
+            console.log("connection");
+            console.log(auth);
 
             localStorage.setItem("user", response.user.uid)
             //localStorage.setItem("user", JSON.stringify(response.user));

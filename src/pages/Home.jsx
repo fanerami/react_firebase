@@ -17,6 +17,8 @@ const Home = () => {
   const [userConnectedEmail, setUserConnectedEmail] = useState("");
 
 
+  console.log("hole");
+  console.log(auth);
   // setUserConnected({"email":"tets"})
   // console.log(userConnected);
 
