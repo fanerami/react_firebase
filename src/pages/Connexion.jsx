@@ -18,13 +18,13 @@ const Connexion = () => {
     const handleForm = async (e) => {
         e.preventDefault();
         try {
-            // const response = await signInWithEmailAndPassword(auth, email, mdp);
-            await signInWithEmailAndPassword(auth, email, mdp);
+            const response = await signInWithEmailAndPassword(auth, email, mdp);
+            // await signInWithEmailAndPassword(auth, email, mdp);
             setValidation("");
 
 
 
-
+            localStorage.setItem("user", response.user.uid)
             //localStorage.setItem("user", JSON.stringify(response.user));
             //navigate("/");
         } catch (error) {

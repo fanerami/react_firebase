@@ -14,12 +14,18 @@ const Home = () => {
   //   signOut(auth).then(navigate("/connexion"));
   // }
 
+  const [userConnectedEmail, setUserConnectedEmail] = useState("");
+
+
+  // setUserConnected({"email":"tets"})
+  // console.log(userConnected);
+
   const {getUserDetails} = crudUser();
 
 
   // const userConnected = JSON.parse(localStorage.getItem("user"))
 
-  const userConnected = auth.currentUser
+
 
   //console.log(userConnected.uid);
 
@@ -27,14 +33,25 @@ const Home = () => {
 
   useEffect(()=>{
 
-
-
-    const getUserDetailsAsync = async() =>{
-      setUserConnectedDetails(await getUserDetails(userConnected.uid))
+    const getUserDetailsAsync = async(uid, email) =>{
+      setUserConnectedEmail(email);
+      setUserConnectedDetails(await getUserDetails(uid))
     }
 
 
-      getUserDetailsAsync()
+
+    auth.onAuthStateChanged((user) => {
+      if (user) {
+
+        // console.log(user.auth.currentUser.email);
+        // setUserConnected(user.auth.currentUser.email)
+        getUserDetailsAsync(user.auth.currentUser.uid, user.auth.currentUser.email);
+      }
+    });
+
+
+    // getUserDetailsAsync();
+
   }, [])
 
 
@@ -78,7 +95,7 @@ const Home = () => {
                   <hr />
                   <div className="form-floating mb-3">
                     <label className="form-label fs-2 fw-bold">Email :</label>
-                    <p className="form-control-plaintext fs-2">{userConnected.email}</p>
+                    <p className="form-control-plaintext fs-2">{userConnectedEmail}</p>
                   </div>
 
                   {/* Bouton de déconnexion

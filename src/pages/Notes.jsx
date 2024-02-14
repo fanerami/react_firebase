@@ -16,7 +16,7 @@ const Notes = () => {
     const [activeTab, setActiveTab] = useState('myNotes');
 
 
-    const userConnected = auth.currentUser
+    // const userConnected = auth.currentUser
 
     const navigate = useNavigate();
 
@@ -29,13 +29,21 @@ const Notes = () => {
     useEffect(()=>{
 
 
-        const getUserNotesAsync= async() =>{
+        const getUserNotesAsync= async(uid) =>{
 
-            setUserNotes(await getUserNotes(userConnected.uid));
-            setUserNotesSharedWith(await getUserNotesSharedWith(userConnected.uid));
+            setUserNotes(await getUserNotes(uid));
+            setUserNotesSharedWith(await getUserNotesSharedWith(uid));
         }
 
-        getUserNotesAsync();
+
+        auth.onAuthStateChanged((user) => {
+            if (user) {
+
+              // console.log(user.auth.currentUser.uid);
+              getUserNotesAsync(user.auth.currentUser.uid);
+            }
+          });
+        // getUserNotesAsync();
 
 
     }, [])

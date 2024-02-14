@@ -8,7 +8,7 @@ const Navbar = () => {
     const navigate = useNavigate();
 
     const deconnect = () => {
-        //localStorage.removeItem("user");
+        localStorage.removeItem("user");
         signOut(auth).then(() => {
             navigate("/connexion")
         });

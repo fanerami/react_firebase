@@ -28,7 +28,7 @@ export const crudUser = () =>{
             let profileUrl = "https://via.placeholder.com/150"
 
             try {
-                const ImageURL = await getDownloadURL(ref(storage, `users/${uid}/profil.jpg`));
+                const ImageURL = await getDownloadURL(ref(storage, `users/${uid}/profii.jpg`));
                 profileUrl = ImageURL;
 
             } catch (error) {
@@ -47,7 +47,7 @@ export const crudUser = () =>{
 
     const uploadImageProfile = async(uid, fileUpload) => {
         try {
-            const filesFolderRef = ref(storage, `users/${uid}/profil.jpg`);
+            const filesFolderRef = ref(storage, `users/${uid}/profil`);
             await uploadBytes(filesFolderRef, fileUpload);
         } catch (error) {
             console.error(error);
