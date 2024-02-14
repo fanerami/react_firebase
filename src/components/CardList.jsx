@@ -83,7 +83,7 @@ const CardList = (props) => {
                     key={index + 1}
                     onClick={() => handlePageChange(index + 1)}
                 >
-                    <a className="page-link" href="#">{index + 1}</a>
+                    <a href='#root' className="page-link">{index + 1}</a>
                 </li>
                 ))}
             </ul>

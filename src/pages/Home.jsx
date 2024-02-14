@@ -53,7 +53,7 @@ const Home = () => {
 
 
     // getUserDetailsAsync();
-
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
 
@@ -78,7 +78,7 @@ const Home = () => {
                 <div className="card-body text-center">
                   <img
                   src={userConnectedDetails.profileUrl}
-                  alt="Photo de profil"
+                  alt="profil img"
                   className="rounded-circle mb-3 img-thumbnail"
                   style={{width: "150px", heigth : "150px"}} />
                   <h2 className="card-title">Profil Utilisateur</h2>
