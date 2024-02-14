@@ -28,7 +28,7 @@ export const crudUser = () =>{
             let profileUrl = "https://via.placeholder.com/150"
 
             try {
-                const ImageURL = await getDownloadURL(ref(storage, `users/${uid}/profii.jpg`));
+                const ImageURL = await getDownloadURL(ref(storage, `users/${uid}/profil`));
                 profileUrl = ImageURL;
 
             } catch (error) {
