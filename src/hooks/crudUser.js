@@ -1,5 +1,6 @@
-import {db} from '../config/firebase';
+import {db, storage} from '../config/firebase';
 import {collection, doc, setDoc, getDoc} from 'firebase/firestore'
+import {ref, uploadBytes, getDownloadURL} from 'firebase/storage'
 
 
 export const crudUser = () =>{
@@ -17,12 +18,26 @@ export const crudUser = () =>{
 
     const getUserDetails = async (uid) =>{
 
+        // console.log(uid)
+
         try {
             const userDetails = await getDoc(doc(userCollectionRef, uid));
 
+
+
+            let profileUrl = "https://via.placeholder.com/150"
+
+            try {
+                const ImageURL = await getDownloadURL(ref(storage, `users/${uid}/profil.jpg`));
+                profileUrl = ImageURL;
+
+            } catch (error) {
+                console.error(error);
+            }
+
             if (userDetails.exists()) {
-                return userDetails.data();
-              }
+                return {...userDetails.data(), profileUrl};
+            }
 
         } catch (error) {
             console.error(error);
@@ -30,5 +45,14 @@ export const crudUser = () =>{
 
     }
 
-    return {addUserDetails, getUserDetails}
+    const uploadImageProfile = async(uid, fileUpload) => {
+        try {
+            const filesFolderRef = ref(storage, `users/${uid}/profil.jpg`);
+            await uploadBytes(filesFolderRef, fileUpload);
+        } catch (error) {
+            console.error(error);
+        }
+    }
+
+    return {addUserDetails, getUserDetails, uploadImageProfile}
 }

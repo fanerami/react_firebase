@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { createUserWithEmailAndPassword } from 'firebase/auth'
+import { createUserWithEmailAndPassword,signOut } from 'firebase/auth'
 import { auth } from '../config/firebase';
 import { useNavigate, Link } from 'react-router-dom';
 import { crudUser } from '../hooks/crudUser';
@@ -12,14 +12,15 @@ const Inscription = () => {
     const [email, setEmail] = useState("");
     const [mdp, setMdp] = useState("");
     const [repMdp, setRepMdp] = useState("");
-    const [validation, setValidation] = useState("");
     const [name, setName] = useState("");
     const [firstName, setFirstName] = useState("");
+    const [fileUpload, setFileUpload] = useState(null);
+    const [validation, setValidation] = useState("");
 
 
 
     const navigate = useNavigate();
-    const {addUserDetails} = crudUser();
+    const {addUserDetails, uploadImageProfile} = crudUser();
 
     const handleForm = async (e) => {
         e.preventDefault();
@@ -32,8 +33,10 @@ const Inscription = () => {
         try {
             const response = await createUserWithEmailAndPassword(auth, email, mdp);
             setValidation("");
-            console.log(response);
-            localStorage.setItem("user", JSON.stringify(response.user));
+
+
+
+            //localStorage.setItem("user", JSON.stringify(response.user));
 
             const userDetails = {
                 "name": name
@@ -44,22 +47,28 @@ const Inscription = () => {
             }
 
 
-            addUserDetails(response.user.uid, userDetails);
+            await addUserDetails(response.user.uid, userDetails);
 
 
 
-            navigate("/");
+            if(fileUpload){
+                await uploadImageProfile(response.user.uid, fileUpload)
+            }
+
+
+
+            signOut(auth).then(() => {
+                navigate("/connexion")
+            });
+
+
+            // navigate("/connexion");
         } catch (error) {
             if(error.code === "auth/email-already-in-use") {
                 setValidation("email déjà utilisé")
             }
-            console.error(error);
+            //console.error(error);
         }
-
-
-
-
-
 
 
     }
@@ -67,10 +76,17 @@ const Inscription = () => {
 
     useEffect( ()=>{
 
-        const user = localStorage.getItem("user");
-        if(user){
-            navigate("/");
-        }
+        // const user = localStorage.getItem("user");
+        // if(user){
+        //     navigate("/");
+        // }
+
+        const unsubscribe = auth.onAuthStateChanged((user) => {
+            if (user) {
+                navigate("/");
+            }
+          });
+          return () => unsubscribe();
 
     }, []);
 
@@ -167,6 +183,19 @@ const Inscription = () => {
                                         id='signupFirstName'
                                         onChange={(e) => setFirstName(e.target.value)}
                                          />
+
+
+                                    </div>
+
+                                    <div className="mb-3">
+
+                                        <label className='form-label' htmlFor='profilPhoto'>Photo de profil</label>
+
+                                        <input
+                                        type='file'
+                                        className="form-control"
+                                        id='profilPhoto'
+                                        onChange={(e) => setFileUpload(e.target.files[0])}/>
 
 
                                     </div>

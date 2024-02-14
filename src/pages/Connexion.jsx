@@ -5,6 +5,10 @@ import { useNavigate, Link } from 'react-router-dom';
 
 const Connexion = () => {
 
+
+
+
+
     const [email, setEmail] = useState("");
     const [mdp, setMdp] = useState("");
     const [validation, setValidation] = useState("");
@@ -14,25 +18,42 @@ const Connexion = () => {
     const handleForm = async (e) => {
         e.preventDefault();
         try {
-            const response = await signInWithEmailAndPassword(auth, email, mdp);
+            // const response = await signInWithEmailAndPassword(auth, email, mdp);
+            await signInWithEmailAndPassword(auth, email, mdp);
             setValidation("");
-            localStorage.setItem("user", JSON.stringify(response.user));
-            navigate("/");
+
+
+
+
+            //localStorage.setItem("user", JSON.stringify(response.user));
+            //navigate("/");
         } catch (error) {
-            console.error(error);
+            if(error.code === "auth/invalid-credential") {
+                setValidation("Email ou mot de passe incorrecte")
+            }
+            //console.error(error);
         }
     }
 
-    console.log(auth);
 
     useEffect( ()=>{
 
-        const user = localStorage.getItem("user");
-        if(user){
-            navigate("/");
-        }
+        // const user = localStorage.getItem("user");
+        // if(user){
+        //     navigate("/");
+        // }
+
+        const unsubscribe = auth.onAuthStateChanged((user) => {
+            if (user) {
+
+                navigate("/");
+            }
+          });
+          return () => unsubscribe();
 
     }, []);
+
+
 
     return (
         <>

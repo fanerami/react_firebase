@@ -1,34 +1,40 @@
-import { signOut } from 'firebase/auth';
-import React, { useEffect, useState } from 'react'
-import { useNavigate } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
 import { auth } from '../config/firebase';
 import { crudUser } from '../hooks/crudUser';
+import Navbar from '../components/Navbar';
 
 const Home = () => {
 
 
-  const [userConnectedDetails, setUserConnectedDetails] = useState({"firstName":"" , "name":""});
+  const [userConnectedDetails, setUserConnectedDetails] = useState({"firstName":"" , "name":"", profileUrl:"https://via.placeholder.com/150"});
 
-  const navigate = useNavigate();
-  const deconnect = () => {
-    localStorage.removeItem("user");
-    signOut(auth);
-    navigate("/connexion");
-  }
+  // const navigate = useNavigate();
+  // const deconnect = () => {
+  //   //localStorage.removeItem("user");
+  //   signOut(auth).then(navigate("/connexion"));
+  // }
 
   const {getUserDetails} = crudUser();
 
 
-  const userConnected = JSON.parse(localStorage.getItem("user"))
+  // const userConnected = JSON.parse(localStorage.getItem("user"))
+
+  const userConnected = auth.currentUser
+
+  //console.log(userConnected.uid);
 
   // console.log(auth);
 
   useEffect(()=>{
-    const get = async() =>{
+
+
+
+    const getUserDetailsAsync = async() =>{
       setUserConnectedDetails(await getUserDetails(userConnected.uid))
     }
 
-    get()
+
+      getUserDetailsAsync()
   }, [])
 
 
@@ -36,43 +42,54 @@ const Home = () => {
   //setUserConnectedDetails(getUserDetails(userConnected.uid))
   //getUserDetails(userConnected.uid)
 
-  console.log(userConnectedDetails);
+  //console.log(userConnectedDetails); container mt-5
 
 
 
 
   return (
-    <div className="container mt-5">
+    <>
+      <Navbar/>
+      <div className="vh-100 vw-100 top-0">
+        <div className="w-100 h-100 bg-opacity-75">
 
-      <div className="row">
-        <div className="col-md-6 offset-md-3">
-          <div className="card">
-            <div className="card-body text-center">
-              <img src="https://via.placeholder.com/150" alt="Photo de profil" className="rounded-circle mb-3" />
-              <h2 className="card-title">Profil Utilisateur</h2>
-              <hr />
+          <div className="row ">
+            <div className="col-md-6 offset-md-3">
+              <div className="card">
+                <div className="card-body text-center">
+                  <img
+                  src={userConnectedDetails.profileUrl}
+                  alt="Photo de profil"
+                  className="rounded-circle mb-3 img-thumbnail"
+                  style={{width: "150px", heigth : "150px"}} />
+                  <h2 className="card-title">Profil Utilisateur</h2>
+                  <hr />
 
-              {/* Informations utilisateur (à remplacer par des données réelles) */}
-              <div className="mb-3">
-                <label className="form-label">Prénom :</label>
-                <p className="form-control-static">{userConnectedDetails.firstName}</p>
-              </div>
-              <div className="mb-3">
-                <label className="form-label">Nom :</label>
-                <p className="form-control-static">{userConnectedDetails.name}</p>
-              </div>
-              <div className="mb-3">
-                <label className="form-label">Email :</label>
-                <p className="form-control-static">{userConnected.email}</p>
-              </div>
+                  {/* Informations utilisateur (à remplacer par des données réelles) */}
+                  <div className="form-floating mb-3">
+                    <label className="form-label fs-2 fw-bold">Prénom :</label>
+                    <p className="form-control-plaintext fs-2">{userConnectedDetails.firstName}</p>
+                  </div>
+                  <hr />
+                  <div className="form-floating mb-3">
+                    <label className="form-label fs-2 fw-bold">Nom :</label>
+                    <p className="form-control-plaintext fs-2">{userConnectedDetails.name}</p>
+                  </div>
+                  <hr />
+                  <div className="form-floating mb-3">
+                    <label className="form-label fs-2 fw-bold">Email :</label>
+                    <p className="form-control-plaintext fs-2">{userConnected.email}</p>
+                  </div>
 
-              {/* Bouton de déconnexion */}
-              <button onClick={deconnect} className="btn btn-danger btn-block">Déconnexion</button>
+                  {/* Bouton de déconnexion
+                  <button onClick={deconnect} className="btn btn-danger btn-block">Déconnexion</button>*/}
+                </div>
+              </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
+    </>
   )
 }
 

@@ -6,6 +6,9 @@ import Inscription from './pages/Inscription';
 import Home from './pages/Home';
 import Protected from './components/Protected';
 import Connexion from './pages/Connexion';
+import Notes from './pages/Notes';
+import AddNote from './pages/AddNote';
+//import Test from './pages/Test';
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -15,9 +18,11 @@ const router = createBrowserRouter(
       <Route path='connexion' element={<Connexion/>}/>
       <Route path='/' element={<Protected/>} >
         <Route path='/' element={<Home/>} />
+        <Route path='/notes' element={<Notes/>}/>
+        <Route path='/notes/add' element={<AddNote/>}/>
       </Route>
 
-
+      {/*<Route path='test' element={<Test/>} /> */}
     </Route>
   )
 );
