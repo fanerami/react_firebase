@@ -1,4 +1,4 @@
-import React, { useState, useEffect} from 'react';
+import React, { useState} from 'react';
 
 const CardList = (props) => {
 
@@ -23,9 +23,9 @@ const CardList = (props) => {
 
 
 
-    const modifyNote = (id) => {
+    // const modifyNote = (id) => {
 
-    }
+    // }
 
   return (
     <>
