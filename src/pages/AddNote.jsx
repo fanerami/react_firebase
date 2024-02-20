@@ -1,16 +1,21 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Navbar from '../components/Navbar';
 import { auth } from '../config/firebase';
 import {crudNotes} from '../hooks/crudNotes';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 
 const AddNote = () => {
 
 
     const [title, setTitle] = useState("");
     const [content, setContent] = useState("");
+    const [sharedWith, setSharedWith] = useState([]);
 
-    const {addNotes} = crudNotes();
+    const [owner, setOwner] = useState(auth.currentUser.uid);
+
+    const { id } = useParams();
+
+    const {addNotes, getNoteFromId, updateUserNotes} = crudNotes();
 
     const navigate = useNavigate();
 
@@ -21,16 +26,52 @@ const AddNote = () => {
         const data = {
             "title": title,
             "content": content,
-            "owner" : auth.currentUser.uid,
-            "sharedWith": []
+            "owner" : owner, //auth.currentUser.uid,
+            "sharedWith": sharedWith
         }
 
-        addNotes(data).then(()=>{
-            navigate("/notes");
-        })
+        if(typeof id !== 'undefined'){
+            updateUserNotes(id, data).then(() => {
+                navigate("/notes");
+            })
+        }else{
+            addNotes(data).then(()=>{
+                navigate("/notes");
+            })
+        }
 
     }
 
+
+    useEffect(()=>{
+
+        if ( typeof id !== 'undefined' ) {
+            auth.onAuthStateChanged(async (user) => {
+                if (user) {
+
+                    try {
+
+                        const result = await getNoteFromId(id);
+
+                        setContent(result.content);
+                        setTitle(result.title);
+                        setSharedWith(result.sharedWith);
+                        setOwner(result.owner);
+
+                        // console.log(result);
+
+                    } catch (error) {
+                        console.error(error);
+                    }
+
+                }
+            });
+        }
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [])
+
+    // console.log(id);
 
   return (
     <>
@@ -48,6 +89,7 @@ const AddNote = () => {
                             <input
                                 type='title'
                                 className="form-control"
+                                value={title}
                                 id="title"
                                 onChange={(e) => setTitle(e.target.value)}
                                 required />
@@ -57,10 +99,16 @@ const AddNote = () => {
                             <textarea
                                 className="form-control"
                                 id="content"
+                                value={content}
                                 rows="5"
                                 onChange={(e) => setContent(e.target.value)}></textarea>
                         </div>
-                        <button type="submit" className="btn btn-success">Ajouter</button>
+                        {typeof id === 'undefined' && (
+                            <button type="submit" className="btn btn-success">Ajouter</button>
+                        )}
+                        {typeof id !== 'undefined' && (
+                            <button type="submit" className="btn btn-success">Modifier</button>
+                        )}
                         <button
                         onClick={() => {navigate("/notes")}}
                         className="btn btn-danger ms-2">Annuler</button>
