@@ -31,8 +31,8 @@ const CardList = (props) => {
     <>
         {/* <h3>Mes Notes</h3> */}
         <div className="row h-100">
-            {currentNotes.map(note => (
-                <div className="col-md-3 mb-3">
+            {currentNotes.map((note,i) => (
+                <div className="col-md-3 mb-3" key={i}>
                     <div className="card text-bg-light border-dark mb-3 h-100" style={{"maxWidth": "18rem"}}>
 
 

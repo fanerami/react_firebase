@@ -61,6 +61,9 @@ const AddNote = () => {
                                 onChange={(e) => setContent(e.target.value)}></textarea>
                         </div>
                         <button type="submit" className="btn btn-success">Ajouter</button>
+                        <button
+                        onClick={() => {navigate("/notes")}}
+                        className="btn btn-danger ms-2">Annuler</button>
                     </form>
                     </div>
                 </div>

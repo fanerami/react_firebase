@@ -10,6 +10,7 @@ const Notes = () => {
     const {getUserNotes, getUserNotesSharedWith, deleteUserNotes} = crudNotes();
 
 
+    const [user, setUser] = useState(null);
     const [userNotes, setUserNotes] = useState([]);
     const [userNotesSharedWith, setUserNotesSharedWith] = useState([]);
 
@@ -23,7 +24,12 @@ const Notes = () => {
 
 
     const deleteNote = async (id) => {
+
+
         await deleteUserNotes(id);
+
+        setUserNotes(await getUserNotes(user.auth.currentUser.uid))
+
     }
 
     useEffect(()=>{
@@ -39,10 +45,11 @@ const Notes = () => {
         auth.onAuthStateChanged((user) => {
             if (user) {
 
-              // console.log(user.auth.currentUser.uid);
-              getUserNotesAsync(user.auth.currentUser.uid);
+                setUser(user);
+                // console.log(user.auth.currentUser.uid);
+                getUserNotesAsync(user.auth.currentUser.uid);
             }
-          });
+        });
         // getUserNotesAsync();
 
 

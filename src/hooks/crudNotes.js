@@ -41,6 +41,8 @@ export const crudNotes = () =>{
 
 
 
+
+
         try {
             const querySnapshot = await getDocs(q);
 
