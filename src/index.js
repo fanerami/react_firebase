@@ -7,8 +7,8 @@ import Home from './pages/Home';
 import Protected from './components/Protected';
 import Connexion from './pages/Connexion';
 import Notes from './pages/Notes';
-import AddModifyNote from './pages/AddModifyNote';
-//import Test from './pages/Test';
+import AddNote from './pages/AddNote';
+import ModifyNote from './pages/ModifyNote';
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -19,11 +19,9 @@ const router = createBrowserRouter(
       <Route path='/' element={<Protected/>} >
         <Route path='/' element={<Home/>} />
         <Route path='/notes' element={<Notes/>}/>
-        <Route path='/notes/add' element={<AddModifyNote/>}/>
-        <Route path='/notes/modify/:id' element={<AddModifyNote/>}/>
+        <Route path='/notes/add' element={<AddNote/>}/>
+        <Route path='/notes/modify/:id' element={<ModifyNote/>}/>
       </Route>
-
-      {/*<Route path='test' element={<Test/>} /> */}
     </Route>
   )
 );

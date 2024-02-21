@@ -8,7 +8,7 @@ export const crudNotes = () =>{
 
 
 
-    const addNote = async (data) =>{
+    const addNote = async (id, data) =>{
         await setDoc(doc(notesCollectionRef),data)
 
     }
@@ -92,7 +92,7 @@ export const crudNotes = () =>{
 
     }
 
-    const updateUserNote = async ( id, data ) => {
+    const updateNote = async ( id, data ) => {
         await setDoc(doc(notesCollectionRef, id),data)
     }
 
@@ -106,5 +106,5 @@ export const crudNotes = () =>{
 
 
 
-    return {addNote, getUserNotes, getUserNotesSharedWith, updateUserNote, deleteUserNote, getNoteFromId}
+    return {addNote, getUserNotes, getUserNotesSharedWith, updateNote, deleteUserNote, getNoteFromId}
 }

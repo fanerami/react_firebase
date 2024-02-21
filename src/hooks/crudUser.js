@@ -68,7 +68,8 @@ export const crudUser = () =>{
             const userToShare = []
             querySnapshot.forEach((user) => {
                 if(user.id !== uid){
-                    userToShare.push({"value": user.id, "label": user.data().firstName+" "+user.data().name})
+                    // userToShare.push({"value": user.id, "label": user.data().firstName+" "+user.data().name})
+                    userToShare.push({"id": user.id, "text": user.data().firstName+" "+user.data().name})
                 }
             });
 
