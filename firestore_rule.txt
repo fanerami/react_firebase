@@ -1,0 +1,120 @@
+
+// Firestore document in the "users" collection
+{
+  "userId": "user123",
+  "allowedUsers": ["allowedUser1UID", "allowedUser2UID", "allowedUser3UID"],
+  // Other fields...
+}
+
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Allow only specific users to write to documents
+    match /yourCollection/{documentId} {
+      allow write: if request.auth != null && request.auth.uid in resource.data.allowedUsers;
+    }
+  }
+}
+
+
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Allow users to write to their own documents
+    match /users/{userId} {
+      allow write: if request.auth != null && request.auth.uid == userId;
+    }
+  }
+}
+
+
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Autoriser la lecture pour tous les utilisateurs authentifiés
+    match /{document=**} {
+      allow read: if request.auth != null;
+    }
+
+    // Autoriser l'écriture pour les administrateurs uniquement
+    match /{document=**} {
+      allow write: if request.auth != null && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin';
+    }
+  }
+}
+
+
+users (collection)
+|
+└── userId1 (document)
+|   ├── email: "user1@example.com"
+|   ├── roles: ["admin", "editor"]
+|   └── otherUserInfo: ...
+|
+└── userId2 (document)
+    ├── email: "user2@example.com"
+    ├── roles: ["editor"]
+    └── otherUserInfo: ...
+
+
+
+roles (collection)
+|
+└── admin (document)
+|   ├── name: "admin"
+|   └── permissions: ["read", "write", "delete"]
+|
+└── editor (document)
+    ├── name: "editor"
+    └── permissions: ["read", "write"]
+
+
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Allow users to read and write their own user document
+    match /users/{userId} {
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+    }
+    
+    
+
+    // Allow admins to read and write all documents
+    match /{document=**} {
+      allow read, write: if isUserAdmin();
+    }
+  }
+}
+
+function isUserAdmin() {
+  return get(/databases/$(database)/documents/users/$(request.auth.uid)).data.roles["admin"] == true;
+}
+
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Allow users to read and write their own user document
+    match /users/{userId} {
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+    }
+
+    // Allow admins to read and write all documents
+    match /{document=**} {
+      allow read, write: if isUserAdmin() || isDocumentOwner();
+    }
+  }
+}
+
+function isUserAdmin() {
+  // Check if the authenticated user has the "admin" role
+  return get(/databases/$(database)/documents/users/$(request.auth.uid)).data.roles["admin"] == true;
+}
+
+function isDocumentOwner() {
+  // Check if the authenticated user is the owner of the document
+  return get(/databases/$(database)/documents/$(resource)).data.owner == request.auth.uid;
+}
+
+
