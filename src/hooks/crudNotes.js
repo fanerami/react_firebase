@@ -8,7 +8,7 @@ export const crudNotes = () =>{
 
 
 
-    const addNotes = async (data) =>{
+    const addNote = async (data) =>{
         await setDoc(doc(notesCollectionRef),data)
 
     }
@@ -28,6 +28,7 @@ export const crudNotes = () =>{
                 id: doc.id,
             }));
 
+
             return filteredNotes;
 
         } catch (error) {
@@ -43,6 +44,7 @@ export const crudNotes = () =>{
 
 
 
+
         try {
             const querySnapshot = await getDocs(q);
 
@@ -50,7 +52,8 @@ export const crudNotes = () =>{
 
 
             querySnapshot.forEach(async (note) => {
-                // doc.data() is never undefined for query doc snapshots
+
+                // note.data() is never undefined for query doc snapshots
                 try {
                     const userDetails = await getDoc(doc(collection(db, "user"), note.data().owner));
 
@@ -89,12 +92,12 @@ export const crudNotes = () =>{
 
     }
 
-    const updateUserNotes = async ( id, data ) => {
+    const updateUserNote = async ( id, data ) => {
         await setDoc(doc(notesCollectionRef, id),data)
     }
 
 
-    const deleteUserNotes = async (uid) =>{
+    const deleteUserNote = async (uid) =>{
 
         await deleteDoc(doc(notesCollectionRef, uid))
 
@@ -103,5 +106,5 @@ export const crudNotes = () =>{
 
 
 
-    return {addNotes, getUserNotes, getUserNotesSharedWith, updateUserNotes, deleteUserNotes, getNoteFromId}
+    return {addNote, getUserNotes, getUserNotesSharedWith, updateUserNote, deleteUserNote, getNoteFromId}
 }

@@ -3,76 +3,112 @@ import Navbar from '../components/Navbar';
 import { auth } from '../config/firebase';
 import {crudNotes} from '../hooks/crudNotes';
 import { useNavigate, useParams } from 'react-router-dom';
+import { crudUser } from '../hooks/crudUser';
+import Select from 'react-select';
+import makeAnimated from 'react-select/animated';
 
-const AddNote = () => {
+// component used to add or modify note
+const AddModifyNote = () => {
 
 
     const [title, setTitle] = useState("");
     const [content, setContent] = useState("");
     const [sharedWith, setSharedWith] = useState([]);
+    const [owner, setOwner] = useState("");
+    const [users, setUsers] = useState([]);
+    const [selectedUsers, setSelectedUsers] = useState([]);
+    const [loading, setLoading] = useState(true);
 
-    const [owner, setOwner] = useState(auth.currentUser.uid);
-
+    // get id from the url. If id exists, it is a modification and it is an addition if not
     const { id } = useParams();
 
-    const {addNotes, getNoteFromId, updateUserNotes} = crudNotes();
+    const { addNote, getNoteFromId, updateUserNote } = crudNotes();
+    const { getUsers } = crudUser();
 
     const navigate = useNavigate();
+
+    const animatedComponents = makeAnimated();
 
 
     const handleForm = async (e) => {
         e.preventDefault();
 
+
         const data = {
             "title": title,
             "content": content,
             "owner" : owner, //auth.currentUser.uid,
-            "sharedWith": sharedWith
+            "sharedWith": selectedUsers.length >0 ? selectedUsers.map(user => user.value): [] //sharedWith
         }
 
+
         if(typeof id !== 'undefined'){
-            updateUserNotes(id, data).then(() => {
+            updateUserNote(id, data).then(() => {
                 navigate("/notes");
             })
         }else{
-            addNotes(data).then(()=>{
+            addNote(data).then(()=>{
                 navigate("/notes");
             })
         }
+
+        // console.log(data);
 
     }
 
 
     useEffect(()=>{
 
-        if ( typeof id !== 'undefined' ) {
+
+        const fetchData = async () => {
             auth.onAuthStateChanged(async (user) => {
                 if (user) {
 
-                    try {
+                    setOwner(user.auth.currentUser.uid);
+                    // Get note details to modify if id exists
+                    if ( typeof id !== 'undefined' ) {
+                        try {
 
-                        const result = await getNoteFromId(id);
+                            const result = await getNoteFromId(id);
 
-                        setContent(result.content);
-                        setTitle(result.title);
-                        setSharedWith(result.sharedWith);
-                        setOwner(result.owner);
+                            setContent(result.content);
+                            setTitle(result.title);
+                            setSharedWith(result.sharedWith);
+                            setOwner(result.owner);
 
-                        // console.log(result);
 
-                    } catch (error) {
-                        console.error(error);
+                        } catch (error) {
+                            console.error(error);
+                        }
+
                     }
 
+
+                    // get lists of user for sharing except the owner
+
+                    const users = await getUsers(user.auth.currentUser.uid);
+                    setUsers(users);
+
+                    // console.log(sharedWith);
+                    // console.log(users);
+                    const filterdUsers = users.filter(user => sharedWith.includes(user.value));
+
+                    setSelectedUsers(filterdUsers);
+                    setLoading(false);
                 }
             });
         }
 
+
+        fetchData();
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
-    // console.log(id);
 
+    if (loading) {
+        return <div>Loading...</div>;
+    }
   return (
     <>
         <Navbar/>
@@ -103,6 +139,15 @@ const AddNote = () => {
                                 rows="5"
                                 onChange={(e) => setContent(e.target.value)}></textarea>
                         </div>
+                        <div className="mb-3">
+                            <Select
+                                value={selectedUsers}
+                                options={users}
+                                closeMenuOnSelect={false}
+                                isMulti
+                                components={animatedComponents}
+                                ></Select>
+                        </div>
                         {typeof id === 'undefined' && (
                             <button type="submit" className="btn btn-success">Ajouter</button>
                         )}
@@ -122,4 +167,4 @@ const AddNote = () => {
   )
 }
 
-export default AddNote
+export default AddModifyNote

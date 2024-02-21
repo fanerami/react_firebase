@@ -7,7 +7,7 @@ import { useNavigate } from 'react-router-dom';
 
 const Notes = () => {
 
-    const {getUserNotes, getUserNotesSharedWith, deleteUserNotes} = crudNotes();
+    const {getUserNotes, getUserNotesSharedWith, deleteUserNote} = crudNotes();
 
 
     const [user, setUser] = useState(null);
@@ -26,7 +26,7 @@ const Notes = () => {
     const deleteNote = async (id) => {
 
 
-        await deleteUserNotes(id);
+        await deleteUserNote(id);
 
         setUserNotes(await getUserNotes(user.auth.currentUser.uid))
 

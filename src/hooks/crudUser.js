@@ -1,5 +1,5 @@
 import {db, storage} from '../config/firebase';
-import {collection, doc, setDoc, getDoc} from 'firebase/firestore'
+import {collection, doc, setDoc, getDoc, getDocs} from 'firebase/firestore'
 import {ref, uploadBytes, getDownloadURL} from 'firebase/storage'
 
 
@@ -12,7 +12,12 @@ export const crudUser = () =>{
     //addDoc(userCollectionRef, )
 
     const addUserDetails = async (uid, userDetails) =>{
-        await setDoc(doc(userCollectionRef, uid),userDetails)
+        try {
+            await setDoc(doc(userCollectionRef, uid),userDetails);
+        } catch (error) {
+            console.log(error);
+        }
+
     }
 
 
@@ -54,5 +59,28 @@ export const crudUser = () =>{
         }
     }
 
-    return {addUserDetails, getUserDetails, uploadImageProfile}
+    // get list of other users
+    const getUsers = async (uid) => {
+
+        try {
+            const querySnapshot = await getDocs(userCollectionRef);
+
+            const userToShare = []
+            querySnapshot.forEach((user) => {
+                if(user.id !== uid){
+                    userToShare.push({"value": user.id, "label": user.data().firstName+" "+user.data().name})
+                }
+            });
+
+            return userToShare;
+        } catch (error) {
+            console.log(error);
+        }
+
+
+
+
+    }
+
+    return {addUserDetails, getUserDetails, uploadImageProfile, getUsers}
 }
