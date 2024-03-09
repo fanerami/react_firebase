@@ -83,7 +83,7 @@ const NoteForm = (props) => {
     <div className="container mt-5">
         <div className="row">
             <div className="col-md-6 offset-md-3">
-            <div className="card">
+            <div className="">
                 <div className="card-body">
                 <form
                 onSubmit={handleForm}

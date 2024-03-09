@@ -5,6 +5,7 @@ import { useParams } from 'react-router-dom'
 import { auth } from '../config/firebase'
 import { crudNotes } from '../hooks/crudNotes'
 import { crudUser } from '../hooks/crudUser'
+import Footer from '../components/Footer'
 
 const ModifyNote = () => {
 
@@ -92,6 +93,7 @@ const ModifyNote = () => {
     <>
         <Navbar/>
         <NoteForm id={id} data={data} writeNote={updateNote} users={users} selectedUsers={selectedUsers}/>
+        <Footer/>
     </>
   )
 }

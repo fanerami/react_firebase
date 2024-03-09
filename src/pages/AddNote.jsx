@@ -4,6 +4,7 @@ import NoteForm from '../components/NoteForm';
 import { crudNotes } from '../hooks/crudNotes';
 import { crudUser } from '../hooks/crudUser';
 import { auth } from '../config/firebase';
+import Footer from '../components/Footer';
 
 const AddNote = () => {
 
@@ -57,6 +58,7 @@ const AddNote = () => {
     <>
         <Navbar/>
         <NoteForm id={null} data={data} writeNote={addNote} users={users} selectedUsers={[]}/>
+        <Footer/>
     </>
   )
 }

@@ -17,16 +17,35 @@ export const crudNotes = () =>{
     const getUserNotes = async (uid) =>{
         const q = query(notesCollectionRef, where("owner", "==", uid));
 
+        const userDetails = await getDoc(doc(collection(db, "user"), uid));
 
 
         try {
             const querySnapshot = await getDocs(q);
 
 
-            const filteredNotes = querySnapshot.docs.map((doc) => ({
-                ...doc.data(),
-                id: doc.id,
-            }));
+            // const filteredNotes = querySnapshot.docs.map((doc) => ({
+            //     ...doc.data(),
+            //     id: doc.id,
+            //     ...userDetails.data()
+            // }));
+
+
+            const filteredNotes = [];
+
+
+
+            querySnapshot.forEach((note) => {
+
+                filteredNotes.push({
+                    ...note.data(),
+                    id: note.id,
+                    shared: false,
+                    ...userDetails.data()
+                })
+
+            });
+
 
 
             return filteredNotes;
@@ -39,11 +58,6 @@ export const crudNotes = () =>{
 
     const getUserNotesSharedWith = async (uid) =>{
         const q = query(notesCollectionRef, where('sharedWith', "array-contains", uid));
-
-
-
-
-
 
         try {
             const querySnapshot = await getDocs(q);
@@ -61,8 +75,11 @@ export const crudNotes = () =>{
                     filteredNotes.push({
                         ...note.data(),
                         id: note.id,
+                        shared: true,
                         ...userDetails.data()
                     })
+
+
                 } catch (error) {
                     console.error(error);
                 }

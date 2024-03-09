@@ -34,10 +34,6 @@ const Inscription = () => {
             const response = await createUserWithEmailAndPassword(auth, email, mdp);
             setValidation("");
 
-
-
-            //localStorage.setItem("user", JSON.stringify(response.user));
-
             const userDetails = {
                 "name": name
             }
@@ -61,13 +57,11 @@ const Inscription = () => {
                 navigate("/connexion")
             });
 
-
-            // navigate("/connexion");
         } catch (error) {
             if(error.code === "auth/email-already-in-use") {
                 setValidation("email déjà utilisé")
             }
-            //console.error(error);
+
         }
 
 
@@ -75,11 +69,6 @@ const Inscription = () => {
 
 
     useEffect( ()=>{
-
-        // const user = localStorage.getItem("user");
-        // if(user){
-        //     navigate("/");
-        // }
 
         const unsubscribe = auth.onAuthStateChanged((user) => {
             if (user) {
@@ -92,7 +81,7 @@ const Inscription = () => {
 
   return (
     <>
-    <div className="position-fixed vh-100 vw-100 top-0">
+    <div className="position-fixed vh-100 vw-100 top-0" style={{color:"black"}}>
         <div className="w-100 h-100 bg-dark bg-opacity-75">
         </div>
 

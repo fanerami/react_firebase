@@ -2,36 +2,19 @@ import React, { useEffect, useState } from 'react';
 import { auth } from '../config/firebase';
 import { crudUser } from '../hooks/crudUser';
 import Navbar from '../components/Navbar';
+import Footer from '../components/Footer';
 
 const Home = () => {
 
 
   const [userConnectedDetails, setUserConnectedDetails] = useState({"firstName":"" , "name":"", profileUrl:"https://via.placeholder.com/150"});
 
-  // const navigate = useNavigate();
-  // const deconnect = () => {
-  //   //localStorage.removeItem("user");
-  //   signOut(auth).then(navigate("/connexion"));
-  // }
 
   const [userConnectedEmail, setUserConnectedEmail] = useState("");
 
 
-  console.log("hole");
-  console.log(auth);
-  // setUserConnected({"email":"tets"})
-  // console.log(userConnected);
-
   const {getUserDetails} = crudUser();
 
-
-  // const userConnected = JSON.parse(localStorage.getItem("user"))
-
-
-
-  //console.log(userConnected.uid);
-
-  // console.log(auth);
 
   useEffect(()=>{
 
@@ -45,23 +28,12 @@ const Home = () => {
     auth.onAuthStateChanged((user) => {
       if (user) {
 
-        // console.log(user.auth.currentUser.email);
-        // setUserConnected(user.auth.currentUser.email)
         getUserDetailsAsync(user.auth.currentUser.uid, user.auth.currentUser.email);
       }
     });
 
-
-    // getUserDetailsAsync();
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
-
-
-
-  //setUserConnectedDetails(getUserDetails(userConnected.uid))
-  //getUserDetails(userConnected.uid)
-
-  //console.log(userConnectedDetails); container mt-5
+  }, []);
 
 
 
@@ -99,15 +71,13 @@ const Home = () => {
                     <label className="form-label fs-2 fw-bold">Email :</label>
                     <p className="form-control-plaintext fs-2">{userConnectedEmail}</p>
                   </div>
-
-                  {/* Bouton de déconnexion
-                  <button onClick={deconnect} className="btn btn-danger btn-block">Déconnexion</button>*/}
                 </div>
               </div>
             </div>
           </div>
         </div>
       </div>
+      <Footer/>
     </>
   )
 }
